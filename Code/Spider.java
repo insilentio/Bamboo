@@ -1,79 +1,125 @@
 package Bamboo;
 
-import java.awt.Color;
+import java.awt.*;
+import java.util.Vector;
+import java.applet.*;
 
 class Spider extends Creature implements Runnable {
 
-  Thread spiderThread;
-  private boolean toRight;
-  private boolean toBottom;
+	//fields
+	boolean isVulnerable = false;
+	Thread spiderThread;
+	boolean isFirst = true;
+	int firstX = 0;
+	int firstY = 0;
+	int indexInPolygon = 1;
+	int passedPointX = Field.ourPolygon.getPoint(indexInPolygon - 1).x;
+	int passedPointY = Field.ourPolygon.getPoint(indexInPolygon - 1).y;
+	int nextPointX = Field.ourPolygon.getPoint(indexInPolygon).x;
+	int nextPointY = Field.ourPolygon.getPoint(indexInPolygon).y;
+	String direction = "East";
 
-  public Spider( int x, int y, int size, int speed, String name, Color color ) {
-    toRight = true;
-    toBottom = true;
-    spiderThread = new Thread( this );
-    position = new Position( x, y, x, y );
-    this.setSize(size);
-    this.setSpeed(speed);
-    this.setName( name );
-    this.setPosition( position );
-    this.setColor ( color );
-  }
+	//constructor
+	public Spider( int x, int y, int size, int speed, String name, Color color) {
+		super.position = new Position(x, y, x, y);
+		this.setSize( size );
+		this.setSpeed( speed );
+		this.setName( name );
+		this.setPosition( position );
+		this.setColor ( color );
+		spiderThread = new Thread( this );
+	}
 
-  public void run(){
-    while ( true ){
-      this.setPosition(calcNewX(this.position));
-      this.setPosition(calcNewY(this.position));
-      Field.f.update(Field.f.getGraphics());
-      try{
-        spiderThread.sleep(this.readSpeed());
-      }
-      catch ( InterruptedException e ){
-        System.out.println(e);
-      }
-    }
-  }
+	public void run(){
+		while ( true ){
+			this.setPosition(this.calcNewPos(this.position));
+			//this.setPosition(this.calcNewY(this.position));
+			Field.f.update(Field.f.getGraphics());
+			try{
+				spiderThread.sleep(this.readSpeed());
+			}
+			catch ( InterruptedException e ){
+				System.out.println(e);
+			}
+		}
+	}
 
-  Position calcNewX(Position p){
-    p.setOldX( p.readNewX());
-    if ( this.toRight == true ){
-      p.setNewX(p.readOldX() + Field.DELTA);
-      if ( p.readNewX() >= Field.BOARDWIDTH + Field.DELTABORDER - this.readSize() ){
-        p.setNewX( 2 * Field.BOARDWIDTH + 2 * Field.DELTABORDER - p.readNewX()  - 2 * this.readSize());
-        this.toRight = false;
-        return p;
-      }
-    }
-    else{
-      p.setNewX( p.readOldX() - Field.DELTA);
-      if ( p.readNewX() <= Field.DELTABORDER ){
-        p.setNewX( 2 * Field.DELTABORDER - p.readNewX());
-        this.toRight = true;
-        return p;
-      }
-    }
-    return p;
-  }
+	Position calcNewPos(Position p){
+		p.setOldX(p.readNewX());
+		p.setOldY(p.readNewY());
 
-  Position calcNewY(Position p){
-    p.setOldY( p.readNewY());
-    if ( this.toBottom == true ){
-      p.setNewY( p.readOldY() + Field.DELTA);
-      if ( p.readNewY() >= Field.BOARDHEIGHT + Field.DELTABORDER - this.readSize() ){
-        p.setNewY( 2 * Field.BOARDHEIGHT + 2 * Field.DELTABORDER - p.readNewY() - 2 * this.readSize());
-        this.toBottom = false;
-        return p;
-      }
-    }
-    else{
-      p.setNewY( p.readOldY() - Field.DELTA);
-      if ( p.readNewY() <= Field.DELTABORDER ){
-        p.setNewY( 2 * Field.DELTABORDER - p.readNewY());
-        this.toBottom = true;
-        return p;
-      }
-    }
-    return p;
-  }
+		if ( this.direction == "North" ){
+			p.setNewY(p.readOldY()+1);
+		}
+
+		if (this.direction == "East" ){
+			p.setNewX(p.readOldX()+1);
+		}
+
+		if ( this.direction == "South" ){
+			p.setNewY(p.readOldY()-1);
+		}
+
+		if (this.direction == "West" ){
+			p.setNewX(p.readOldX()-1);
+		}
+
+		if ( p.readNewX() == this.nextPointX && p.readNewY() == this.nextPointY ){
+			if ( indexInPolygon < (Field.ourPolygon.getLength() - 1)){
+				this.indexInPolygon++;
+			}
+			else{
+				this.indexInPolygon = 0;
+			}
+
+			this.passedPointX = this.nextPointX;
+			this.passedPointY = this.nextPointY;
+			this.nextPointX = Field.ourPolygon.getPoint(indexInPolygon).x;
+			this.nextPointY = Field.ourPolygon.getPoint(indexInPolygon).y;
+
+			if ( this.passedPointX < this.nextPointX )
+				this.direction = "East";
+			if ( this.passedPointX > this.nextPointX )
+				this.direction = "West";
+			if ( this.passedPointY < this.nextPointY )
+				this.direction = "North";
+			if ( this.passedPointY > this.nextPointY )
+				this.direction = "South";
+		}
+		return p;
+	}
+
+	/*if ( p.readNewY() == Field.DELTABORDER){
+		p.setNewX(p.readNewX() + Field.DELTA);
+		if ( p.readNewX() > Field.BOARDWIDTH + Field.DELTABORDER ){
+		p.setNewX(Field.BOARDWIDTH);
+		}
+	}
+
+	if ( p.readNewY() == Field.BOARDHEIGHT + Field.DELTABORDER){
+		p.setNewX(p.readNewX() - Field.DELTA);
+		if ( p.readNewX() < Field.DELTABORDER ){
+		p.setNewX(Field.BOARDWIDTH);
+		}
+	}
+	return p;
+	}*/
+
+	/*Position calcNewY(Position p){
+	p.setOldY(p.readNewY());
+	if ( p.readNewX() == Field.DELTABORDER){
+		p.setNewY(p.readNewY() - Field.DELTA);
+		if ( p.readNewY() > Field.BOARDHEIGHT + Field.DELTABORDER ){
+		p.setNewY(Field.BOARDHEIGHT);
+		}
+	}
+
+	if ( p.readNewX() == Field.BOARDWIDTH + Field.DELTABORDER){
+		p.setNewY(p.readNewY() + Field.DELTA);
+		if ( p.readNewY() < Field.DELTABORDER ){
+		p.setNewY(Field.BOARDHEIGHT);
+		}
+	}
+	return p;
+	}*/
 }
-

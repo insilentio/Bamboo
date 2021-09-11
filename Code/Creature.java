@@ -2,52 +2,104 @@ package Bamboo;
 
 import java.awt.Color;
 
-public class Creature {
-  public Creature() {}
+public class Creature{
 
-  void setSpeed(int s){
-    this.speed = s;
-  }
+	//fields
+	private int size;
+	private int speed;
+	private String name;
+	private Color color;
+	Position position;
 
-  void setSize(int s){
-    this.size = s;
-  }
+	//member class
+	class Position{
 
-  void setName(String n){
-    this.name = n;
-  }
+		//fields
+		private int OldX, OldY, NewX, NewY;
 
-  void setPosition(Position p){
-    this.position = p;
-  }
+		//constructor of member class
+		public Position(int ox, int oy, int nx, int ny){
+			OldX = ox;
+			OldY = oy;
+			NewX = nx;
+			NewY = ny;
+		}
 
-  void setColor ( Color c ){
-    this.color = c;
-  }
+		void setOldX ( int ox ){
+			this.OldX = ox;
+		}
 
-  int readSpeed(){
-    return this.speed;
-  }
+		int readOldX (){
+			return this.OldX;
+		}
 
-  int readSize(){
-    return this.size;
-  }
+		void setOldY ( int oy ){
+			this.OldY = oy;
+		}
 
-  String readName(){
-    return this.name;
-  }
+		int readOldY (){
+			return this.OldY;
+		}
 
-  Position readPosition(){
-    return this.position;
-  }
+		void setNewX ( int nx ){
+			this.NewX = nx;
+		}
 
-  Color readColor(){
-    return this.color;
-  }
+		int readNewX (){
+			return this.NewX;
+		}
 
-  private int size;
-  private int speed;
-  private String name;
-  private Color color;
-  Position position;
+		void setNewY ( int ny ){
+			this.NewY = ny;
+		}
+
+		int readNewY (){
+			return this.NewY;
+		}
+	}
+	//end of member class
+
+	//constructor
+	public Creature() {}
+
+	//instance methods
+	void setSpeed(int s){
+			this.speed = s;
+	}
+
+	void setSize(int s){
+		this.size = s;
+	}
+
+	void setName(String n){
+		this.name = n;
+	}
+
+	void setPosition(Position p){
+		this.position = p;
+	}
+
+	void setColor ( Color c ){
+		this.color = c;
+	}
+
+	int readSpeed(){
+		return this.speed;
+	}
+
+	int readSize(){
+		return this.size;
+	}
+
+	String readName(){
+		return this.name;
+	}
+
+	Position readPosition(){
+		return this.position;
+	}
+
+	Color readColor(){
+		return this.color;
+	}
 }
