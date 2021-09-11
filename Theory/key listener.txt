@@ -1,0 +1,14 @@
+-------- Ursprüngliche Nachricht -------- Betreff:  java 
+Datum:  Fri, 17 Aug 2001 11:33 +0200 
+Von:  SIMON.ZUERCHER@MOBI.CH 
+An:  baumi@access.unizh.ch 
+
+
+
+--- Erhalten von  BKAAAA2.U109362  031/389 XXXX     17-08-01 11.33
+  -> baumi(A)access.unizh.ch
+hoi baumi
+
+für den fall, dass wir doch noch einmal dazu kommen, am game
+weiterzumachen: damit der keyListener funktioniert, müssen wir dem applet
+(oder evtl. demframe) den Fokus geben. xxxxxx.setFocus;
